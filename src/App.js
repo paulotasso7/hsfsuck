@@ -17,7 +17,7 @@ class App extends Component {
     super();
     this.state = {
       input: '',
-      imgURL: 'https://media.istockphoto.com/vectors/identification-card-vector-line-icon-isolated-on-white-background-vector-id1138583106?k=20&m=1138583106&s=612x612&w=0&h=Za2SHan6eBmxsma6SZfohNfJzGJODzYn9OAfKqsxMmk=',
+      imgURL: 'https://media.gettyimages.com/videos/modern-question-mark-line-icon-animation-on-white-background-video-id1213673269?s=640x640',
       imgBOX: [],
       imgR: ''
     }
@@ -30,17 +30,18 @@ class App extends Component {
   onButtonSubmit = () => {
     this.setState({imgURL: this.state.input});
     app.models
-      .predict(Clarifai.MODERATION_MODEL, this.state.input)
-      .then((response) => this.onImgRead(response))
+      .predict(Clarifai.GENERAL_EMBED_MODEL, this.state.input)
+      .then((response) => console.log(response))
       .catch(err => console.log('eroou:',err));
   }
 
   onImgRead = (param) => {
     const mapeador = param.outputs[0].data.concepts
     .map((res, i) => {
-      return(<li>{res.name}: {res.value*100}%</li>);
+      return `${Math.round(res.value*100).toFixed(2)}% 
+              ${res.name.charAt(0).toUpperCase() + res.name.slice(1)}`
     });
-     this.setState({imgBOX: mapeador});
+  this.setState({imgBOX: mapeador});
   }
 
   render() {
